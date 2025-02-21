@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
-from supabase_client import get_student_details
-from gemini_client import generate_summary
+from api.supabase_client import get_student_details
+from api.gemini_client import generate_summary
 
 app = Flask(__name__)
 
