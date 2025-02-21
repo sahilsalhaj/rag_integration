@@ -34,6 +34,3 @@ def process_query():
 
     summary = generate_summary(student_data)
     return jsonify({"response": summary})
-
-if __name__ == "__main__":
-    app.run(debug=True)
