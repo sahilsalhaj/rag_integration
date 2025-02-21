@@ -13,7 +13,7 @@ def extract_usn(query):
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return "Hello welcome to rag project"
 
 @app.route("/query", methods=["POST"])
 def process_query():
