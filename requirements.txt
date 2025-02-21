@@ -1,5 +1,4 @@
 flask
 python-dotenv
-supabase-py
+supabase
 google-generativeai
-
