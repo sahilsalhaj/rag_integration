@@ -337,32 +337,40 @@
     
                 // Expand the box
                 container.classList.add("expanded");
-    
+
                 try {
                     let response = await fetch("http://127.0.0.1:5000/query", {
                         method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ query: inputText })
                     });
-    
+
                     let data = await response.json();
-    
-                    if (data.response) {
+                    console.log("API Raw Response:", data);  // Debugging
+
+                    if (typeof data.response === "string") {
+                        // Case 1: Single company response (string)
                         responseBox.innerHTML = marked.parse(data.response);
-                        responseBox.classList.add("visible");
-    
-                        // Scroll to the response but allow user to scroll back
-                        responseBox.scrollIntoView({ behavior: "smooth", block: "start" });
+                    } else if (typeof data.response === "object") {
+                        // Case 2: Multiple companies response (object) -> Combine all responses
+                        let combinedResponse = Object.entries(data.response)
+                            .map(([company, report]) => `### ${company}\n\n${report}`)
+                            .join("\n\n---\n\n");  // Separate companies with a divider
+
+                        responseBox.innerHTML = marked.parse(combinedResponse);
                     } else {
-                        responseBox.innerHTML = "<span style='color: red;'>No response from server.</span>";
-                        responseBox.classList.add("visible");
+                        responseBox.innerHTML = "<span style='color: red;'>Unexpected response format.</span>";
                     }
+
+                    responseBox.classList.add("visible");
+                    responseBox.scrollIntoView({ behavior: "smooth", block: "start" });
                 } catch (error) {
+                    console.error("Fetch error:", error);
                     responseBox.innerHTML = "<span style='color: red;'>Error: Unable to fetch response.</span>";
                     responseBox.classList.add("visible");
                 }
+
+
             }
         </script>
     
