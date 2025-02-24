@@ -13,7 +13,13 @@ def get_all_companies():
 
 def get_student_details(usn, company=None):
     try:
-        query = supabase.table("interview_stats").select("*").eq("usn", usn)
+        # query = supabase.table("interview_stats").select("*").eq("usn", usn)
+        query = (
+            supabase.table("interview_stats")
+            .select("*, student_info(name)")
+            .eq("usn", usn)
+        )
+
 
         if company:
 #            query = query.eq("company_name", company)  # Filter for specific company

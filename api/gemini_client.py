@@ -28,6 +28,7 @@ def generate_summary(student_data):
     Generate a structured summary for the student based on their interview progress:
 
     - USN: {student_data['usn']}
+    - Name: {student_data['student_info']['name']}
     - Company: {student_data.get('company_name', 'N/A')}
     - Applied: {'Yes' if student_data.get('applied') else 'No'}
     - Shortlisted: {'Yes' if student_data.get('shortlisted') else 'No'}
