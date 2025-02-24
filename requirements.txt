@@ -3,3 +3,4 @@ python-dotenv
 supabase
 google-generativeai
 waitress
+flask-cors
