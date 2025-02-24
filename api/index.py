@@ -90,7 +90,8 @@ def extract_usn(query):
 
 @app.route("/")
 def home():
-    return render_template("index.html")  # Serves the frontend
+    return "Welcome to the Interview Tracker API!"
+#    return render_template("index.html")  # Serves the frontend
 
 @app.route("/query", methods=["POST"])
 def process_query():
