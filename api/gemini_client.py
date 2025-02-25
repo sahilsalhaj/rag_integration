@@ -91,6 +91,7 @@ def generate_summary(student_data):
         {rounds_analysis}
 
         Provide insights on overall strengths, weaknesses, and areas of improvement based on this data.
+        in round analysis give both fraction and percentage of rounds cleared.
         """
 
     else:
