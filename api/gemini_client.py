@@ -74,26 +74,6 @@ def generate_summary(student_data):
                 if status:
                     rounds_cleared_count[round_name] = rounds_cleared_count.get(round_name, 0) + 1
 
-        # Construct the rounds analysis section
-        # rounds_analysis = "\n".join(
-        #     [f"**{round_name}** cleared - ({count}/{total_attempts})" for round_name, count in rounds_cleared_count.items()]
-        # ) or "No rounds cleared."
-
-        # prompt = f"""
-        # Provide a consolidated performance summary for {student_data[0]['usn']} across all companies.
-
-        # - Name: {student_data[0]['student_info']['name']}
-        # - Total Companies Applied: {total_attempts}
-        # - Total Companies Placed: {total_placed}
-        # - Placement Rate: {placement_rate:.2f}%
-
-        # ### Interview Rounds Analysis:
-        # {rounds_analysis}
-
-        # Provide insights on overall strengths, weaknesses, and areas of improvement based on this data.
-        # in round analysis give both fraction and percentage of rounds cleared.
-        # make sure everytime you answer you maintain the same format and structure of response.
-        # """
         rounds_analysis = "\n".join(
             [f"**{round_name}** cleared - ({count}/{total_attempts}) [{(count / total_attempts) * 100:.2f}%]" 
             for round_name, count in rounds_cleared_count.items()]
@@ -123,7 +103,8 @@ def generate_summary(student_data):
     else:
         return "Invalid data format."
 
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("gemini-2.0-flash-lite")
+    
     response = model.generate_content(prompt)
 
     return response.text if response and hasattr(response, "text") else "No summary available."
