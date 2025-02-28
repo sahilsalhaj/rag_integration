@@ -57,26 +57,6 @@ def generate_summary(student_data, rounds_analysis=None):  # Added `rounds_analy
         # Use provided rounds_analysis if available
         rounds_summary = rounds_analysis or "No round data available."
 
-        # prompt = f"""
-        # Provide a structured and consistent performance summary for {student_data[0]['usn']} across all companies.
-
-        # ## Student Overview:
-        # - **Name:** {student_data[0]['student_info']['name']}
-        # - **Total Companies Applied:** {total_attempts}
-        # - **Total Companies Placed:** {total_placed}
-        # - **Placement Rate:** {placement_rate:.2f}%
-
-        # ## Interview Rounds Analysis:
-        # {rounds_summary}
-
-        # ## Performance Insights:
-        # - Strengths:
-        # - Weaknesses:
-        # - Areas for Improvement:
-
-        # **Ensure the response follows this exact structure every time, including all section headers and formatting.**
-        # """
-
         prompt = f"""
         Provide a structured and consistent performance summary for {student_data[0]['usn']} across all companies.
 
@@ -87,7 +67,8 @@ def generate_summary(student_data, rounds_analysis=None):  # Added `rounds_analy
         - **Placement Rate:** {placement_rate:.2f}%
 
         ## Interview Rounds Analysis:
-        {''.join(f"- **{key}:** {value}\n" for key, value in rounds_summary.items())}
+        {rounds_summary if isinstance(rounds_summary, str) else ''.join(f"- **{key}:** {value}\n" for key, value in rounds_summary.items())}
+
 
         ## Performance Insights:
         - **Strengths:** Identify key areas where the student excels.
