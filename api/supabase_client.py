@@ -7,9 +7,10 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 def get_all_companies():
     """Fetch all distinct company names from the database."""
     response = supabase.table("interview_stats").select("company_name").execute()
-    if response.data:
-        return {row["company_name"].lower() for row in response.data}
-    return set()
+    if not response.data:  # Check if data is None or empty
+        return set()  # Return an empty set instead of causing an error
+
+    return {row["company_name"].lower() for row in response.data if "company_name" in row}
 
 def get_student_details(usn, company=None):
     try:

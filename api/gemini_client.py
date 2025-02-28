@@ -4,7 +4,7 @@ from api.config import GEMINI_API_KEY
 # Configure Gemini AI
 genai.configure(api_key=GEMINI_API_KEY)
 
-def generate_summary(student_data):
+def generate_summary(student_data, rounds_analysis=None):  # Added `rounds_analysis`
     """Generate a structured AI-based student interview summary."""
 
     if not student_data:
@@ -12,7 +12,7 @@ def generate_summary(student_data):
 
     # Case 1: If a company is specified, process single-record summary
     if isinstance(student_data, dict) and 'company_name' in student_data:
-        rounds = {
+        rounds = {  
             "Resume Screening": student_data.get("resume_screening"),
             "Aptitude": student_data.get("aptitude"),
             "Technical MCQ": student_data.get("technical_mcq"),
@@ -54,30 +54,28 @@ def generate_summary(student_data):
         total_placed = sum(1 for record in student_data if record.get("placed"))
         placement_rate = (total_placed / total_attempts) * 100 if total_attempts > 0 else 0
 
-        # Dictionary to store the count of how many times each round was cleared
-        rounds_cleared_count = {}
+        # Use provided rounds_analysis if available
+        rounds_summary = rounds_analysis or "No round data available."
 
-        for record in student_data:
-            for round_name, status in {
-                "Resume Screening": record.get("resume_screening"),
-                "Aptitude": record.get("aptitude"),
-                "Technical MCQ": record.get("technical_mcq"),
-                "Coding Round 1": record.get("coding_1"),
-                "Group Discussion": record.get("gd"),
-                "Coding Round 2": record.get("coding_2"),
-                "Technical Interview 1": record.get("technical_interview_1"),
-                "Technical Interview 2": record.get("technical_interview_2"),
-                "Assignment": record.get("assignment"),
-                "Managerial Round": record.get("managerial_round"),
-                "HR Round": record.get("hr_round"),
-            }.items():
-                if status:
-                    rounds_cleared_count[round_name] = rounds_cleared_count.get(round_name, 0) + 1
+        # prompt = f"""
+        # Provide a structured and consistent performance summary for {student_data[0]['usn']} across all companies.
 
-        rounds_analysis = "\n".join(
-            [f"**{round_name}** cleared - ({count}/{total_attempts}) [{(count / total_attempts) * 100:.2f}%]" 
-            for round_name, count in rounds_cleared_count.items()]
-        ) or "No rounds cleared."
+        # ## Student Overview:
+        # - **Name:** {student_data[0]['student_info']['name']}
+        # - **Total Companies Applied:** {total_attempts}
+        # - **Total Companies Placed:** {total_placed}
+        # - **Placement Rate:** {placement_rate:.2f}%
+
+        # ## Interview Rounds Analysis:
+        # {rounds_summary}
+
+        # ## Performance Insights:
+        # - Strengths:
+        # - Weaknesses:
+        # - Areas for Improvement:
+
+        # **Ensure the response follows this exact structure every time, including all section headers and formatting.**
+        # """
 
         prompt = f"""
         Provide a structured and consistent performance summary for {student_data[0]['usn']} across all companies.
@@ -89,12 +87,12 @@ def generate_summary(student_data):
         - **Placement Rate:** {placement_rate:.2f}%
 
         ## Interview Rounds Analysis:
-        {rounds_analysis}
+        {''.join(f"- **{key}:** {value}\n" for key, value in rounds_summary.items())}
 
         ## Performance Insights:
-        - Strengths:
-        - Weaknesses:
-        - Areas for Improvement:
+        - **Strengths:** Identify key areas where the student excels.
+        - **Weaknesses:** Highlight struggles in certain rounds.
+        - **Areas for Improvement:** Suggest ways to improve performance.
 
         **Ensure the response follows this exact structure every time, including all section headers and formatting.**
         """
@@ -108,4 +106,3 @@ def generate_summary(student_data):
     response = model.generate_content(prompt)
 
     return response.text if response and hasattr(response, "text") else "No summary available."
-
