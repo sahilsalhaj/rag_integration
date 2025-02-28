@@ -67,8 +67,7 @@ def generate_summary(student_data, rounds_analysis=None):  # Added `rounds_analy
         - **Placement Rate:** {placement_rate:.2f}%
 
         ## Interview Rounds Analysis:
-        {rounds_summary if isinstance(rounds_summary, str) else ''.join(f"- **{key}:** {value}\n" for key, value in rounds_summary.items())}
-
+        {rounds_summary}
 
         ## Performance Insights:
         - **Strengths:** Identify key areas where the student excels.
